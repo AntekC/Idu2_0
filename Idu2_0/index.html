@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Qhf2gUGqG-dYpPT2_GUBZPOXhfGgWOf0MnWXT7mbR6OJ23xRJnJs5joopiQcTaPWRUJ8H2zzf20A72iU3GUKymQVMl98KY3qy4Fae_K0SKg161AayhhJDS46-j5mC4sR_ZKxWSPQ-KGbgmUYul7dYeTs1kgOudAZmC2JfKytaNzqoSQjQ0vge9wvsBppRaoJWJSHvF5pHudMIuIWcCUJ4mrWzGSdKpEkfCzlkwUwRss6Xpc6hc9j2yHKHOGLTBTszurWN4c0Tma6IO3X3HE4J0enF1ZMaJcDXoSVdB_eCjN3KzOHnu3NeEjbACwFccAMrMGttfTFkNI1TlUbPcBA3-1swZD21ZI7Ow7rBPWap0kW_dtnmqzFkQGAC2yeUCzFm787bhxWt8umUpBjJOc3oK5UpONOyxhsTCr5ospw5k_rcHYtyCJq7vBDIcX2e-beqvnn25pnhNzRNSzN8Oi8CtliqxUZdc3yAbj5odq6XAK-tM5Rhm_-jm573O--9P2L2PVeScxgIWxQJEEKM9zZGJv0CuFSqNGDRcySOEpQpCtBZkwqoJhTBnOUc84lkCTf9-VbhusGGqg22WH-ST6Ao_47Le7zYFhL6Mch_RMwWhk61UXAxgAriv48ySF9lzyHP9TiRe_hVr3QBxHc04vy6vEt7M0W3qINOjUwZLfRTnTKITFC7Ysq7E8c0XjLA44sACnGySVK-HrUSlGBtM3wVImGRM8FE5YxTxpj5Ltux3kDdz7r6-AtOpn9WhP7DyLH1N9BwNymvcK2nxeoh-Qa8apHjyc8aPdLiLFRCUJoU-J7EVaklvfuBnQkaNE6JVrG_a5ETyntHBLIDRh6Z9mgUfv4GIS_czC7kFvUHqp1QLjwoMBdPo_eYDTHTagt5t6rfZMouWrCtlNQLxg6_A75VkHAN01K2tv7X6X3Jt9fALamKKZKIqE0cdtsU4fbC7PsAlhDKaz7418bA8JaeU1QTukx1pFvgsYyutvHT00bv-AHz0KrGgHrpw8XxUzb0BSSj5T79L8WJ7OWB6XFbaXRj3ShzOsywYy8WM3bsSm7C0bdCsN0nlUhJUbQuRyA6lyVxOiewy0iEk9BMPhB2vArT_S7wT-H-QyyWf1TbN_wWA01ZFO0MUVBLQiEQ8fU9f1Cq_vbj4eyeN-3l680cWMARn7W2RVK9tCK1_gkZZFgCEdo5qLapbVrGMCW40tu9g1uvM1SSncjONgs6ZIFXVg-Hw" charset="UTF-8"></script></head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-content>
+	  
+        <v-container>           
+            <div><v-btn @click='getStudents()'>Get Students</v-btn></div>
+            <div>{{ info }}</div>
+            <div>{{ students }}</div>
+        <div>
+            <v-data-table
+                :headers='headers'
+                :items='students'
+                disable-pagination 
+                hide-deafult-footer>
+            </v-data-table>
+        </div>
+        </v-container>
+      </v-content>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>  
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+
+      data: {
+          counter: 0,
+          info: '',
+          students:[],
+          headers: [
+            {text: 'imie', value:'FirstName'},
+            {text: 'nazwisko', value:'LastName'},
+          ]
+      },
+
+      methods: {        
+          getStudents() {
+              axios
+                .get('http://localhost:5000/students')
+                .then(
+                  response => (this.students = response.data),
+                  error => (this.info = error)
+                )
+          }
+      },
+
+
+    })
+  </script>
+</body>
+</html>

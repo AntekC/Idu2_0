@@ -4,7 +4,7 @@ from flask_cors import CORS
 import json
 import re
 
-DATABASE = "./students.db"
+DATABASE = "./Idu2_0/students.db"
 app = Flask(__name__)
 CORS(app)
 
@@ -38,14 +38,13 @@ def index():
 
 @app.route('/students')
 def students():
-    return jsonify(query_db('select * from students'))
+    return jsonify(query_db('SELECT * FROM students'))
     get_db().close()
         
 
 @app.route('/students/<student_name>')
 def student_page(student_name):
-    f_name = re.findall('[A-Z][^A-Z]*', student_name)[0]
-    l_name = re.findall('[A-Z][^A-Z]*', student_name)[1]
+    f_name , l_name = re.findall('[A-Z][^A-Z]*', student_name)[0], re.findall('[A-Z][^A-Z]*', student_name)[1]
     the_username = f"{f_name} {l_name}"
     student = query_db(f"SELECT * FROM students WHERE Student_name = ?",[the_username], one=True)
     if student is None:
