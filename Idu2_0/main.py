@@ -4,7 +4,7 @@ from flask_cors import CORS
 import json
 import re
 
-DATABASE = "./Idu2_0/students.db"
+DATABASE = "./students.db"
 app = Flask(__name__)
 CORS(app)
 
@@ -36,13 +36,25 @@ def close_connection(exception):
 def index():
     return 'Index Page'
 
-@app.route('/students')
+@app.route('/test',methods=['GET','POST'])
+def test():
+    if request.method == 'POST':
+        return f"{request.args['a']}"
+    else:
+        return "Kolo"
+@app.route('/api/students',methods=['GET','POST'])
 def students():
-    return jsonify(query_db('SELECT * FROM students'))
-    get_db().close()
+    if request.method == 'POST':
+        query_db(f"INSERT INTO students (Student_name) VALUES ('{request.args['name']}')")
+        get_db().commit()
+        get_db().close()
+        return f"Dodano studenta {request.args['name']}"
+    else: 
+        return jsonify(query_db('SELECT * FROM students'))
+    
         
 
-@app.route('/students/<student_name>')
+@app.route('/api/students/<student_name>')
 def student_page(student_name):
     f_name , l_name = re.findall('[A-Z][^A-Z]*', student_name)[0], re.findall('[A-Z][^A-Z]*', student_name)[1]
     the_username = f"{f_name} {l_name}"

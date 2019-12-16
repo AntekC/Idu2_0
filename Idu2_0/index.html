@@ -24,6 +24,16 @@
             </v-data-table>
         </div>
         </v-container>
+        <v-container>
+          <v-form>
+            <v-text-field
+              v-model="Name"
+              lable="Name"
+              required>
+            </v-text-field>
+            <div><v-btn @click='addStudent(Name)'>Add Students</v-btn></div>
+          </v-form>
+        </v-container>
       </v-content>
     </v-app>
   </div>
@@ -42,19 +52,22 @@
           info: '',
           students:[],
           headers: [
-            {text: 'imie', value:'FirstName'},
-            {text: 'nazwisko', value:'LastName'},
+            {text: 'Imie', value:'Student_name'},
           ]
       },
 
       methods: {        
           getStudents() {
               axios
-                .get('http://localhost:5000/students')
+                .get('http://localhost:5000/api/students')
                 .then(
                   response => (this.students = response.data),
                   error => (this.info = error)
                 )
+          },
+          test(){
+            axios
+            .post('http://127.0.0.1:5000/test', "hello" )
           }
       },
 
