@@ -16,12 +16,44 @@
             <div>{{ info }}</div>
             <div>{{ students }}</div>
         <div>
-            <v-data-table
-                :headers='headers'
-                :items='students'
-                disable-pagination 
-                hide-deafult-footer>
-            </v-data-table>
+          <template>
+            <v-card>
+              <v-card-title>
+                Students
+                <v-spacer></v-spacer>
+                <v-text-field
+                  v-model="search"
+                  label="Search"
+                  single-line
+                  hide-details                 
+                ></v-text-field>
+              </v-card-title>
+              <v-data-table
+              :headers='headers'
+              :items='students'
+              :search='search'
+              class="elevation-1"
+              disable-pagination 
+              hide-deafult-footer>
+              <template v-slot:item.action="{item}">
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="editItem(item)"
+                >
+                  edit
+                </v-icon>
+                <v-icon
+                  small
+                  @click="deleteItem(item)"
+                >
+                  delete
+                </v-icon>
+              </template>
+              </v-data-table>
+            </v-card>
+          </template>
+
         </div>
         </v-container>
       </v-content>
@@ -40,25 +72,39 @@
       data: {
           counter: 0,
           info: '',
+          search: '',
           students:[],
           headers: [
-            {text: 'imie', value:'FirstName'},
-            {text: 'nazwisko', value:'LastName'},
+            {text: 'imie', value:'First_name'},
+            {text: 'nazwisko', value:'Second_name'},
+            { text: 'Actions', value: 'action', sortable: false },
           ]
       },
 
       methods: {        
           getStudents() {
               axios
-                .get('http://localhost:5000/students')
+                .get('http://127.0.0.1:5000/students')
                 .then(
                   response => (this.students = response.data),
                   error => (this.info = error)
                 )
-          }
+          },
+          editItem(item){
+            confirm('${item}')
+
+          },
+          deleteItem(item){
+            console.log(Object.values(item)[0])
+            axios.delete('http://127.0.0.1:5000/students/'.concat(Object.values(item)[0],'_',Object.values(item)[1]))
+            axios    
+                .get('http://127.0.0.1:5000/students')
+                .then(
+                  response => (this.students = response.data),
+                  error => (this.info = error)
+                )
+          },
       },
-
-
     })
   </script>
 </body>
