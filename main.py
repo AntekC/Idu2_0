@@ -42,7 +42,7 @@ def students():
     get_db().close()
         
 
-@app.route('/students/<first_name>_<second_name>', methods=['GET','DELETE'])
+@app.route('/students/<first_name>_<second_name>', methods=['GET','DELETE','POST'])
 def student_page(first_name,second_name):
     if request.method == 'GET':
         #f_name , l_name = re.findall('[A-Z][^A-Z]*', student_name)[0], re.findall('[A-Z][^A-Z]*', student_name)[1]
@@ -57,6 +57,11 @@ def student_page(first_name,second_name):
         get_db().commit()
         get_db().close()
         return f"Student {first_name} {second_name} was deleted"
+    elif request.method == 'POST':
+        query_db(f'INSERT INTO students VALUES ("{first_name}","{second_name}")')
+        get_db().commit()
+        get_db().close()
+        return f"Added students {first_name} {second_name}"
 
 
 
