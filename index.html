@@ -9,56 +9,75 @@
 <body>
   <div id="app">
     <v-app>
-      <v-content>
-	  
+      <v-content> 
         <v-container>           
             <div><v-btn @click='getStudents()'>Get Students</v-btn></div>
             <div>{{ info }}</div>
             <div>{{ students }}</div>
-        <div>
-          <template>
-            <v-card>
-              <v-card-title>
-                Students
-                <v-spacer></v-spacer>
+          <div>
+            <template>
+              <v-card>
+                <v-card-title>
+                  Students
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="search"
+                    label="Search"
+                    single-line
+                    hide-details                 
+                  ></v-text-field>
+                </v-card-title>
+                <v-data-table
+                :headers='headers'
+                :items='students'
+                :search='search'
+                class="elevation-1"
+                disable-pagination 
+                hide-deafult-footer>
+                <template v-slot:item.action="{item}">
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="editItem(item)"
+                  >
+                    edit
+                  </v-icon>
+                  <v-icon
+                    small
+                    @click="deleteItem(item)"
+                  >
+                    delete
+                  </v-icon>
+                </template>
+                </v-data-table>
+              </v-card>
+            </template>
+          </div>
+          </v-container>
+          <v-container max-width="500px">  
+            <v-form>
+              <v-col cols="12" sm="6">
                 <v-text-field
-                  v-model="search"
-                  label="Search"
-                  single-line
-                  hide-details                 
-                ></v-text-field>
-              </v-card-title>
-              <v-data-table
-              :headers='headers'
-              :items='students'
-              :search='search'
-              class="elevation-1"
-              disable-pagination 
-              hide-deafult-footer>
-              <template v-slot:item.action="{item}">
-                <v-icon
-                  small
-                  class="mr-2"
-                  @click="editItem(item)"
-                >
-                  edit
-                </v-icon>
-                <v-icon
-                  small
-                  @click="deleteItem(item)"
-                >
-                  delete
-                </v-icon>
-              </template>
-              </v-data-table>
-            </v-card>
-          </template>
-
-        </div>
-        </v-container>
-      </v-content>
-    </v-app>
-  </div>
+                v-model="FirstName"
+                lable="First Name"
+                outlined
+                placeholder="Imie"
+                required>
+                </v-text-field>
+                <v-text-field
+                v-model="LastName"
+                lable="Last Name"
+                outlined
+                placeholder="Nazwisko"
+                required>
+                </v-text-field>
+              </v-col
+              <div><v-btn @click='addStudent(FirstName,LastName)'>Add Students</v-btn></div>
+            </v-form>
+          </v-container>     
+        </v-content>
+      </v-app>
+    </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
@@ -71,6 +90,8 @@
 
       data: {
           counter: 0,
+          FirstName: '',
+          LastName: '',
           info: '',
           search: '',
           students:[],
@@ -78,31 +99,45 @@
             {text: 'imie', value:'First_name'},
             {text: 'nazwisko', value:'Second_name'},
             { text: 'Actions', value: 'action', sortable: false },
-          ]
+          ],
+          editedItem: {
+            First_name: '',
+            Second_name: '',
+          }
       },
 
       methods: {        
-          getStudents() {
-              axios
+          async getStudents() {
+              await axios
+                .get('http://127.0.0.1:5000/students')
+                .then(
+                  response => (this.students = response.data),
+                  error => (this.info = error)
+                )
+          },         
+          async deleteItem(item){
+            
+            await axios.delete('http://127.0.0.1:5000/students/'.concat(Object.values(item)[0],'_',Object.values(item)[1]))
+            await axios
                 .get('http://127.0.0.1:5000/students')
                 .then(
                   response => (this.students = response.data),
                   error => (this.info = error)
                 )
           },
-          editItem(item){
-            confirm('${item}')
-
-          },
-          deleteItem(item){
-            console.log(Object.values(item)[0])
-            axios.delete('http://127.0.0.1:5000/students/'.concat(Object.values(item)[0],'_',Object.values(item)[1]))
-            axios    
-                .get('http://127.0.0.1:5000/students')
-                .then(
-                  response => (this.students = response.data),
-                  error => (this.info = error)
-                )
+          async addStudent(fname, lname){
+            await axios
+            .post('http://127.0.0.1:5000/students/'.concat(fname,'_',lname))
+            .then(
+              response => (this.message = response.data),
+              error => (this.error_message = error),
+              )
+            await axios
+              .get('http://127.0.0.1:5000/students')
+              .then(
+                response => (this.students = response.data),
+                error => (this.info = error)
+              )
           },
       },
     })
