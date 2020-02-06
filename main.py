@@ -58,8 +58,5 @@ def student_page(first_name,second_name):
         get_db().close()
         return f"Student {first_name} {second_name} was deleted"
 
-
-
-
 if __name__ == '__main__':
     app.run()
